@@ -1,0 +1,114 @@
+mydestination =
+mynetworks = 127.0.0.0/8, 108.61.222.241, 172.81.60.62
+mailbox_size_limit = 0
+recipient_delimiter = +
+inet_interfaces = all
+inet_protocols = ipv4
+notify_classes = bounce, resource, software
+
+# Virtual domains, users, and aliases
+virtual_mailbox_domains = mysql:/etc/postfix/mysql-virtual_mailbox_domains.cf
+virtual_mailbox_maps = mysql:/etc/postfix/mysql-virtual_mailbox_maps.cf
+virtual_alias_maps = mysql:/etc/postfix/mysql-virtual_alias_maps.cf
+# transport_maps = hash:/etc/postfix/transport
+virtual_transport = lmtp:unix:private/dovecot-lmtp
+smtpd_sender_login_maps = mysql:/etc/postfix/mysql-virtual_sender_permissions.cf
+
+virtual_uid_maps = static:2000
+virtual_gid_maps = static:2000
+
+
+dovecot_destination_recipient_limit = 1
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+delay_warning_time = 5h
+
+readme_directory = no
+
+smtp_use_tls = yes
+smtp_tls_security_level = may
+smtp_tls_key_file = /etc/letsencrypt/live/mail.domain.com/privkey.pem
+smtp_tls_cert_file = /etc/letsencrypt/live/mail.domain.com/cert.pem
+smtp_tls_CAfile = /etc/letsencrypt/live/mail.domain.com/fullchain.pem
+
+smtpd_use_tls = yes
+smtpd_tls_security_level = may
+smtp_tls_note_starttls_offer = yes
+smtp_sasl_security_options = noanonymous, noplaintext
+smtpd_tls_key_file = $smtp_tls_key_file
+smtpd_tls_cert_file = $smtp_tls_cert_file
+smtpd_tls_CAfile = $smtp_tls_CAfile
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1.3
+
+smtpd_tls_session_cache_timeout = 3600s
+tls_random_source = dev:/dev/urandom
+tls_ssl_options = NO_COMPRESSION, NO_TICKET
+tls_disable_workarounds = CRYPTOPRO_TLSEXT_BUG, DONT_INSERT_EMPTY_FRAGMENTS, LEGACY_SERVER_CONNECT, MICROSOFT_BIG_SSLV3_BUFFER, MICROSOFT_SESS_ID_BUG, NETSCAPE_CHALLENGE_BUG, NETSCAPE_REUSE_CIPHER_CHANGE_BUG, TLS_BLOCK_PADDING_>
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+#smtpd_sasl_path = inet:127.0.0.1:2050
+broken_sasl_auth_clients = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
+smtpd_tls_auth_only = yes
+
+#smtpd_client_restrictions=reject_rbl_client zen.spamhaus.org
+
+smtpd_sender_restrictions =  reject_rbl_client rbl_domain=144.21.108.126,
+    reject_rhsbl_client rbl_domain=193.32.160.137,
+    reject_rhsbl_reverse_client rbl_domain=104.131.145.137,
+    reject_non_fqdn_sender, reject_sender_login_mismatch
+
+#permit_sasl_authenticated,reject
+policyd-spf_time_limit = 3600
+smtpd_relay_restrictions =  reject_non_fqdn_recipient,
+    permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination,
+    check_policy_service unix:private/policyd-spf,
+    reject_unknown_sender_domain,
+    reject_rhsbl_helo dbl.spamhaus.org,
+   reject_rhsbl_sender dbl.spamhaus.org,
+   reject_rhsbl_reverse_client dbl.spamhaus.org,
+   reject_rbl_client zen.spamhaus.org
+
+smtpd_helo_restrictions = reject_unknown_helo_hostname, $smtpd_relay_restrictions
+
+smtpd_data_restrictions = reject_unauth_pipelining
+
+# require proper helo at connections 
+smtpd_helo_required = yes
+# waste spammers time before rejecting them 
+smtpd_delay_reject = yes
+disable_vrfy_command = yes
+
+# OpenDKIM
+milter_default_action = accept
+milter_protocol = 6
+#smtpd_milters = local:/var/spool/postfix/opendkim/opendkim.sock
+smtpd_milters = inet:localhost:8891
+non_smtpd_milters = $smtpd_milters
+
+
+#smtpd_connection_cache_destinations = $virtual_mailbox_domains, hotmail.com, yahoo.com, gmail.com, outlook.com
+
+#rejection message
+smtpd_reject_footer = \c. For assistance.
+     Please provide the following information in your problem report:
+     time ($localtime), client ($client_address) and server micro.imailer.xyz.
+
+
+multi_instance_wrapper = ${command_directory}/postmulti -p --
+multi_instance_enable = yes
+multi_instance_directories =
+
+sendmail_path = /usr/sbin/postfix
+
+#compatibility_level = 2
