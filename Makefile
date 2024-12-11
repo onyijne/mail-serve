@@ -30,11 +30,5 @@ p:
 	@echo Y | docker volume prune; echo Y | docker network prune
 	@docker volume rm mail_serve_redis_cache
 
-.PHONY: res
-# help: res				- make res d=tedu f=flexdeal_cico.sql
-res:
-	@docker exec -it cf-ms-mysql bash -c \
-	"mysql --defaults-extra-file=config.cnf --database=$d < $f"
-
 
 UNAME := $(shell uname)
