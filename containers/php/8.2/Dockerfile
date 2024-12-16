@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create system user to run Composer and Artisan Commands
-RUN useradd -m -d /home/${user} -u ${uid} -U -s /bin/bash ${user} && \
+RUN useradd -m -d /home/${user} -u 1000 -U -s /bin/bash ${user} && \
     mkdir -p /home/${user}/.composer && \
     chown -R ${user}:${user} /home/${user}
 
