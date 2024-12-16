@@ -40,6 +40,7 @@ services:
       - ./.ms/mysql-queries:/queries:z,rw
       - ./containers/mysql/config.cnf:/etc/config.cnf
       - ./containers/mysql/copy.sh:/etc/copy.sh
+      - mysql-data:/var/lib/mysql
     env_file:
       - ./.env
 
@@ -65,6 +66,7 @@ name: mail_serve
 
 volumes:
   redis_cache:
+  mysql-data:
 
 networks:
   mailnet:
