@@ -27,6 +27,14 @@ services:
       - ./mail/.:/var/www/:rw
     networks:
       - mailnet
+    ports:
+      - 25:25
+      - 587:587
+      - 110: 110
+      - 995:995
+      - 143:143
+      - 993:993
+      - 4190:4190
 
   if_ms_mysql:
     image: mysql:8
