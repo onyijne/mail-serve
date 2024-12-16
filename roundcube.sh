@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # change directory
-cd ./mail
+cd mail
 
 # download latest froxlor version
 wget https://github.com/roundcube/roundcubemail/releases/download/1.5.9/roundcubemail-1.5.9-complete.tar.gz
@@ -11,7 +11,7 @@ wget https://github.com/roundcube/roundcubemail/releases/download/1.5.9/roundcub
 tar xvfz roundcubemail-1.5.9-complete.tar.gz
 
 # remove archive
-rm roundcubemail-1.5.9-complete.tar.gz
+rm *.gz
 
 mv roundcubemail-1.5.9 roundcube
 

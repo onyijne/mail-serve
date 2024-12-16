@@ -1,7 +1,7 @@
 #! /bin/sh
 
 # change directory
-cd ./mail
+cd mail
 
 # download latest froxlor version
 wget https://files.froxlor.org/releases/froxlor-latest.tar.gz
@@ -11,6 +11,6 @@ wget https://files.froxlor.org/releases/froxlor-latest.tar.gz
 tar xvfz froxlor-latest.tar.gz
 
 # remove archive
-rm froxlor-latest.tar.gz
+rm -rf *.gz
 
 chmod 0777 -R froxlor/temp

@@ -1,11 +1,11 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm
 
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
 
 # Install system dependencies
-RUN apk update && apk add --no-cache \
+RUN apt update && apt install -y \
     git \
     curl \
     libpng-dev \
@@ -26,7 +26,7 @@ RUN apk update && apk add --no-cache \
 RUN pecl install imagick
 
 # Clear cache
-RUN rm -rf /var/cache/apk/*
+RUN rm -rf /var/cache/apt/*
 
 # Install PHP extensions
 RUN docker-php-ext-configure intl && docker-php-ext-configure zip && \
