@@ -8,7 +8,7 @@ It is assumend your base directory is `/var/www`
 ## Installation
 > First run `make init` after you clone, you do this once.
 
-> Follow this [guide](https://onyijne.hashnode.dev/build-email-server-with-postfix-and-dovecot) to install dependencies.
+> Follow this [guide](https://onyijne.hashnode.dev/build-email-server-with-postfix-and-dovecot) to install dependencies. You can skip the froxlor part.
 
 > Run `make dev` to build docker service, if you want tp run webmailer on docker, or use it's PHPmyadmin.
 
