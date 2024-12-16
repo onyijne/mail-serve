@@ -1,35 +1,23 @@
-name: mail_serve
-
-volumes:
-  redis_cache:
-
-networks:
-  mailnet:
-    driver: bridge
-  appnet:
-    driver: bridge
-
 services:
-  if-ms-redis:
+  if_ms_redis:
     image: redis:7.0.11-alpine
     restart: unless-stopped
-    container_name: cf-ms-redis
+    container_name: cf_ms_redis
     networks:
       - mailnet
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - redis_cache:/data
-    profiles: [ "dev", "prod" ]
 
-  if-ms-php-82:
+  if_ms_php:
     build:
       args:
-        user: ${SYSUSER:-ubuntu}
-        uid: 1000
+        user: ${SYSUSER}
+        uid: ${SYSID}
       context: ./containers/php/8.2
       dockerfile: Dockerfile
-    image: if-ms-php-82
-    container_name: cf-ms-php-82
+    image: if_ms_php
+    container_name: cf_ms_php
     restart: always
     working_dir: /var/www/
     env_file:
@@ -39,34 +27,11 @@ services:
       - ./mail/.:/var/www/:rw
     networks:
       - mailnet
-    profiles: [ "dev", "prod" ]
 
-  if-ms-php-83:
-    build:
-      args:
-        user: ${SYSUSER:-ubuntu}
-        uid: 1000
-      context: ./containers/php/8.3
-      dockerfile: Dockerfile
-    image: if-ms-php-83
-    container_name: cf-ms-php-83
-    restart: always
-    working_dir: /var/www/
-    env_file:
-      - ./.env
-    volumes:
-      - ./containers/php/mount:/mount/:Z,ro
-      - ./mail/.:/var/www/:rw
-    networks:
-      - mailnet
-    extra_hosts:
-      - "mail.domain.com=127.81.60.93"
-    profiles: [ "dev", "prod" ]
-
-  if-ms-mysql:
+  if_ms_mysql:
     image: mysql:8
     restart: always
-    container_name: cf-ms-mysql
+    container_name: cf_ms_mysql
     networks:
       - mailnet
     working_dir: /queries
@@ -77,27 +42,14 @@ services:
       - ./containers/mysql/copy.sh:/etc/copy.sh
     env_file:
       - ./.env
-    profiles: ["dev"]
 
-  if-ms-phpmyadmin:
-   image: phpmyadmin
-   container_name: cf-ms-phpmyadmin
-   restart: unless-stopped
-   env_file:
-    - ./.env
-   ports:
-    - ${PHPMYADMIN_PORT}:80
-   networks:
-    - mailnet
-   profiles: ["dev", "prod"]
-
-  if-ms-nginx:
+  if_ms_nginx:
     build:
       context: ./containers/nginx
       dockerfile: web.Dockerfile
-    image: if-ms-nginx
+    image: if_ms_nginx
     restart: always
-    container_name: cf-ms-nginx
+    container_name: cf_ms_nginx
     networks:
       - mailnet
     ports:
@@ -107,5 +59,15 @@ services:
       - ./containers/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./containers/nginx/sites-enabled:/etc/nginx/sites-enabled:rw
       - ./mail/.:/var/www/:rw
-    profiles: [ "dev", "prod" ]
-  
+
+
+name: mail_serve
+
+volumes:
+  redis_cache:
+
+networks:
+  mailnet:
+    driver: bridge
+  appnet:
+    driver: bridge
