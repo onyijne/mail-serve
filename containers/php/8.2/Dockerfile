@@ -1,14 +1,10 @@
 FROM php:8.2-fpm
 
-# Arguments defined in docker-compose.yml
-ARG user
-ARG uid
-
 # Set environment variables to ensure non-interactive installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     git \
     curl \
     libpng-dev \
@@ -51,10 +47,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     docker-php-ext-enable imagick && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# Get latest Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 
 # Set working directory
 WORKDIR /var/www
