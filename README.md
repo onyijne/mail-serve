@@ -15,3 +15,8 @@ It is assumend your base directory is `/var/www`
 > Run `bash froxlor.sh && bash roundcube.sh`
 
 
+## Server Ports
+```bash
+# open these ports
+- 25, 587, 110, 995, 143, 993, 4190
+```

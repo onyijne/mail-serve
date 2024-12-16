@@ -19,10 +19,21 @@ dev:
 prod:
 	@BUILDKIT_PROGRESS=plain docker compose --profile=prod up --build -d --remove-orphans
 
+.PHONY: dock
+# help: dock				- build container
+dock:
+	@echo "./minit.sh and change the variables"
+	@BUILDKIT_PROGRESS=plain docker compose -f docker-compose.yml up --build -d
+
 .PHONY: init
 # help: init				- clean psql and mysql dir
 init:
 	@bash init.sh
+
+.PHONY: minit
+# help: minit				- initiate .env
+minit:
+	@./minit.sh
 
 .PHONY: p
 # help: p				- prune
